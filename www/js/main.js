@@ -44,6 +44,8 @@ var model2;
 var models = []
 models.push(model1,model2);
 
+var leftHand = new THREE.Object3D;
+
 var loader = new THREE.FBXLoader();
  loader.load( 'models/ghostface.fbx', function ( object ) {
   model1 = object;
@@ -57,6 +59,13 @@ var loader = new THREE.FBXLoader();
   model2.visible = false;
  });
   scene.add( model );
+
+  loader.load( 'models/ghostface.fbx', function ( object ) {
+   leftHand = object;
+   leftHand.scale.set(2,2,2);
+   leftHand.visible = true;
+  });
+   scene.add( leftHand );
 
  document.addEventListener("click", function(){
    updateModel();
@@ -80,6 +89,9 @@ poseNet.on('pose',  function(poses) {
   }
   if (estimatedPose.noseX && estimatedPose.noseY){
     render(estimatedPose, model)
+  }
+  if (estimatedPose.lhX && estimatedPose.lhY){
+    render(estimatedPose, leftHand)
   }
 });
 
