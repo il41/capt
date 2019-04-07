@@ -3,7 +3,7 @@ const vidDiv = document.getElementById('vidDiv')
 video.setAttribute('width', 255);
 video.setAttribute('height', 255);
 video.autoplay = true
-vidDiv.appendChild(video)
+//vidDiv.appendChild(video)
 window.onload = switchBackground();
 
 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -36,6 +36,9 @@ document.body.appendChild( renderer.domElement );
 var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.6 );
 scene.add( directionalLight );
 
+var mat1 = new THREE.MeshLambertMaterial({color: 0x00ff00});
+
+
 var model = new THREE.Object3D;
 var model1;
 var model2;
@@ -60,18 +63,19 @@ loader.load( 'models/arrow.fbx', function ( object ) {
 });
 scene.add( model );
 
-loader.load( 'models/ghostface.fbx', function ( object ) {
+loader.load( 'models/1.fbx', function ( object ) {
   leftHand = object;
   leftHand.scale.set(20,20,20);
   leftHand.visible = true;
   scene.add( leftHand );
 });
 
-loader.load( 'models/ghostface.fbx', function ( object ) {
+loader.load( 'models/hand.fbx', function ( object ) {
   rightHand = object;
   rightHand.scale.set(20,20,20);
   rightHand.visible = true;
   scene.add( rightHand )
+  rightHand.material=mat1;
 });
 
 var bodyModels = [model, leftHand, rightHand];
@@ -142,7 +146,7 @@ function updateModel() {
 };
 
 function switchBackground(){
-  let index = Math.floor(Math.random() * 4);
+  let index = Math.floor(Math.random() * 5);
   let bgImg;
   switch (index) {
     case 0:
@@ -156,6 +160,9 @@ function switchBackground(){
       break;
     case 3:
       bgImg = "4.gif"
+      break;
+    case 4:
+      bgImg = "5.png"
       break;
     default:
       break;
