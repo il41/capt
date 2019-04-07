@@ -4,6 +4,7 @@ video.setAttribute('width', 255);
 video.setAttribute('height', 255);
 video.autoplay = true
 vidDiv.appendChild(video)
+window.onload = switchBackground();
 
 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
   .then(function(stream) {
@@ -59,7 +60,7 @@ var loader = new THREE.FBXLoader();
 
  document.addEventListener("click", function(){
    updateModel();
-   switchBackground();
+   //switchBackground();
  });
 
 const poseNet = ml5.poseNet(video, options, model)
