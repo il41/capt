@@ -46,34 +46,35 @@ var leftHand = new THREE.Object3D;
 var rightHand = new THREE.Object3D;
 
 var loader = new THREE.FBXLoader();
- loader.load( 'models/ghostface.fbx', function ( object ) {
+loader.load( 'models/ghostface.fbx', function ( object ) {
   model1 = object;
   model1.scale.set(20,20,20);
+  model1.visible = true;
   model.add(model1);
- });
- loader.load( 'models/arrow.fbx', function ( object ) {
+});
+loader.load( 'models/arrow.fbx', function ( object ) {
   model2 = object;
   model2.scale.set(20,20,20);
   model.add(model2);
   model2.visible = false;
- });
-  scene.add( model );
+});
+scene.add( model );
 
-  loader.load( 'models/ghostface.fbx', function ( object ) {
-   leftHand = object;
-   leftHand.scale.set(2,2,2);
-   leftHand.visible = true;
-  });
-   scene.add( rightHand );
-   loader.load( 'models/ghostface.fbx', function ( object ) {
-    rightHand = object;
-    rightHand.scale.set(2,2,2);
-    rightHand.visible = true;
-   });
-    scene.add( rightHand );
+loader.load( 'models/ghostface.fbx', function ( object ) {
+  leftHand = object;
+  leftHand.scale.set(2,2,2);
+  leftHand.visible = true;
+  scene.add( leftHand );
+});
+
+loader.load( 'models/ghostface.fbx', function ( object ) {
+  rightHand = object;
+  rightHand.scale.set(2,2,2);
+  rightHand.visible = true;
+  scene.add( rightHand )
+});
 
 var bodyModels = [model, leftHand, rightHand];
-console.log(bodyModels);
 
  document.addEventListener("click", function(){
    updateModel();
@@ -84,19 +85,16 @@ const poseNet = ml5.poseNet(video, options, model)
 
 let pose = []
 
-function bodyPart (x, y, dx, dy, model) {
+function bodyPart (x, y, bmodel) {
   this.x = x;
   this.y = y;
-  this.model = model;
+  this.bmodel = bmodel;
 }
 
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
   if (bodyModels[0] =! undefined){
     let results = loopThroughPoses(poses);
-    for (i=0; i < results.length; i++) {
-      render(results[i]);
-    }
   }
 });
 
@@ -107,7 +105,10 @@ function loopThroughPoses (poses){
     let keyPoints = [temp_pose.keypoints[0], temp_pose.keypoints[9], temp_pose.keypoints[10]];
     for (let j = 0; j < 3; j++) {
       if (keyPoints[j].score > 0.2) {
-        results.push(new bodyPart(keyPoints[j].position.x, keyPoints[j].position.y, bodyModels[j]));
+        model.position.x = keyPoints[j].position.x *.12;
+        model.position.y = (keyPoints[j].position.y *.12) - 10;
+        scene.add(model);
+        renderer.render(scene, camera);
       }
     }
   }
@@ -115,14 +116,6 @@ function loopThroughPoses (poses){
 }
 
 // remember that nose is just an empty object like so {} //
-
-const render = function (bodypart) {
-  bodypart.model.position.x = x * .12;
-  bodypart.model.position.y = y * .12;
-  // console.log(model.position.x);
-  renderer.render(scene, camera);
-  console.log("rendering");
-}
 
 function updateModel() {
   if(model1.visible){
