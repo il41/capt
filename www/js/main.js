@@ -82,27 +82,24 @@ let pose = []
 
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
-  loopThroughPoses(poses, pose);
-
-
-  if (estimatedPose.noseX && estimatedPose.noseY){
-    render(noseX, noseY, model)
-  }
-  if (estimatedPose.lhX && estimatedPose.lhY){
-    render(lhX, lhY, leftHand)
+  let results = loopThroughPoses(poses);
+  for (let i=0, i < results.length; i++) {
+    render(results[i]);
   }
 });
 
-function loopThroughPoses (poses, results){
+function loopThroughPoses (poses){
+  let results = [];
   for (let i = 0; i < poses.length; i++){
     let temp_pose = poses[0].pose;
     let keyPoints = [temp_pose.keypoints[0], temp_pose.keypoints[9], temp_pose.keypoints[10]];
     for (let j = 0; j < 3; j++) {
       if (keyPoints[j].score > 0.2) {
-         results.push(bodyPart(keyPoints[j].position.x, keyPoints[j].position.y, bodyModels[j]);
+         results.push(bodyPart(keyPoints[j].position.x, keyPoints[j].position.y, bodyModels[j]));
       }
     }
   }
+  return results;
 }
 
 // remember that nose is just an empty object like so {} //
