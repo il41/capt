@@ -20,12 +20,6 @@ const options = {
   minConfidence: 0.2
 }
 
-function bodyPart (x, y, dx, dy, model) {
-  this.x = x;
-  this.y = y;
-  this.model = model;
-}
-
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, (innerWidth/2)/(innerHeight/2), 10.1, 1000 );
 camera.position.set( 0, 0, 20 );
@@ -78,8 +72,8 @@ var loader = new THREE.FBXLoader();
    });
     scene.add( rightHand );
 
-let bodyModels = []
-bodyModels.push(model, leftHand, rightHand);
+var bodyModels = [model, leftHand, rightHand];
+console.log(bodyModels);
 
  document.addEventListener("click", function(){
    updateModel();
@@ -90,22 +84,30 @@ const poseNet = ml5.poseNet(video, options, model)
 
 let pose = []
 
+function bodyPart (x, y, dx, dy, model) {
+  this.x = x;
+  this.y = y;
+  this.model = model;
+}
+
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
-  let results = loopThroughPoses(poses);
-  for (i=0; i < results.length; i++) {
-    render(results[i]);
+  if (bodyModels[0] =! undefined){
+    let results = loopThroughPoses(poses);
+    for (i=0; i < results.length; i++) {
+      render(results[i]);
+    }
   }
 });
 
 function loopThroughPoses (poses){
   let results = [];
   for (let i = 0; i < poses.length; i++){
-    let temp_pose = poses[0].pose;
+    let temp_pose = poses[i].pose;
     let keyPoints = [temp_pose.keypoints[0], temp_pose.keypoints[9], temp_pose.keypoints[10]];
     for (let j = 0; j < 3; j++) {
       if (keyPoints[j].score > 0.2) {
-         results.push(bodyPart(keyPoints[j].position.x, keyPoints[j].position.y, bodyModels[j]));
+        results.push(new bodyPart(keyPoints[j].position.x, keyPoints[j].position.y, bodyModels[j]));
       }
     }
   }
@@ -115,10 +117,11 @@ function loopThroughPoses (poses){
 // remember that nose is just an empty object like so {} //
 
 const render = function (bodypart) {
-  bodypart.model.position.x = x *.12;
-  bodypart.model.position.y = y *.12;
+  bodypart.model.position.x = x * .12;
+  bodypart.model.position.y = y * .12;
   // console.log(model.position.x);
   renderer.render(scene, camera);
+  console.log("rendering");
 }
 
 function updateModel() {
