@@ -20,7 +20,11 @@ const options = {
   minConfidence: 0.2
 }
 
-
+function bodyPart (x, y, dx, dy, model) {
+  this.x = x;
+  this.y = y;
+  this.model = model;
+}
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, (innerWidth/2)/(innerHeight/2), 10.1, 1000 );
@@ -88,43 +92,31 @@ let pose = []
 
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
-  loopThroughPoses(poses, pose);
-  let estimatedPose = {
-    noseX: pose[0],
-    noseY: pose[1],
-    lhX: pose[2],
-    lhY: pose[3],
-    rhX: pose[4],
-    rhY: pose[5]
-  }
-  if (estimatedPose.noseX && estimatedPose.noseY){
-    render(estimatedPose, model)
-  }
-  if (estimatedPose.lhX && estimatedPose.lhY){
-    render(estimatedPose, leftHand)
+  let results = loopThroughPoses(poses);
+  for (let i=0, i < results.length; i++) {
+    render(results[i]);
   }
 });
 
-
-function loopThroughPoses (poses, pose){
+function loopThroughPoses (poses){
+  let results = [];
+  for (let i = 0; i < poses.length; i++){
     let temp_pose = poses[0].pose;
     let keyPoints = [temp_pose.keypoints[0], temp_pose.keypoints[9], temp_pose.keypoints[10]];
-    for (let i = 0; i < 3; i++) {
-      if (keyPoints[i].score > 0.2) {
-         pose[2*i] = keyPoints[i].position.x
-         pose[2*i + 1] = keyPoints[i].position.y
+    for (let j = 0; j < 3; j++) {
+      if (keyPoints[j].score > 0.2) {
+         results.push(bodyPart(keyPoints[j].position.x, keyPoints[j].position.y, bodyModels[j]));
       }
+    }
   }
+  return results;
 }
 
 // remember that nose is just an empty object like so {} //
 
-const render = function (pose, model ) {
-  changeX = pose.noseX - 100
-  changeY = pose.noseY - 100
-
-  model.position.x = (changeX * 0.12)
-  model.position.y = -(changeY * 0.12)
+const render = function (bodypart) {
+  bodypart.model.position.x = x *.12;
+  bodypart.model.position.y = y *.12;
   // console.log(model.position.x);
   renderer.render(scene, camera);
 }
