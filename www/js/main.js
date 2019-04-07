@@ -59,6 +59,7 @@ var loader = new THREE.FBXLoader();
 
  document.addEventListener("click", function(){
    updateModel();
+   switchBackground();
  });
 
 const poseNet = ml5.poseNet(video, options, model)
@@ -90,17 +91,15 @@ function loopThroughPoses (poses, nose){
 
   for (let i = 0; i < poses.length; i++) {
     let pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j++) {
-      let keypoint = pose.keypoints[j];
+    // for (let j = 0; j < pose.keypoints.length; j++) {
+      let keypoint = pose.keypoints[0];
       if (keypoint.score > 0.2 && keypoint.part === 'nose' ) {
          nose.x = keypoint.position.x
          nose.y = keypoint.position.y
        }
-    }
+    // }
   }
 }
-
-
 
 // remember that nose is just an empty object like so {} //
 
@@ -115,11 +114,33 @@ const render = function (nose, model ) {
 }
 
 function updateModel() {
-  if(model1.visible==true){
+  if(model1.visible){
     model1.visible=false
     model2.visible=true
-  } else if(model2.visible==true){
+  } else if(model2.visible){
     model2.visible=false
     model1.visible=true;
   }
 };
+
+function switchBackground(){
+  let index = Math.floor(Math.random() * 4);
+  let bgImg;
+  switch (index) {
+    case 0:
+      bgImg = "1.png"
+      break;
+    case 1:
+      bgImg = "2.jpg"
+      break;
+    case 2:
+      bgImg = "3.png"
+      break;
+    case 3:
+      bgImg = "4.gif"
+      break;
+    default:
+      break;
+  }
+  document.body.style.backgroundImage = "url('images/" + bgImg + "')"
+}
