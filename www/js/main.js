@@ -93,7 +93,7 @@ let pose = []
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
   let results = loopThroughPoses(poses);
-  for (let i=0, i < results.length; i++) {
+  for (i=0; i < results.length; i++) {
     render(results[i]);
   }
 });
