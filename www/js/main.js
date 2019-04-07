@@ -1,29 +1,24 @@
 var videoSrc;
-
-if (navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(function (stream) {
-      videoSrc = stream;
-      console.log("got vid")
-    })
-    .catch(function (err0r) {
-      console.log("Something went wrong!");
-    });
-}
+var posenet;
+var skeletons = [];
+var poses = [];
 
 function setup(){
-  var poses = []
-  var posenet = ml5.poseNet(video, modelReady);
+  videoSrc = createCapture(VIDEO);
+  video.size(windowWidth, windowHeight)
+  posenet = ml5.poseNet(videoSrc);
 
-  poseNet.on('pose', function (results) {
+  posenet.on('pose', function (results) {
     poses = results;
+    console.log("got pose");
+    drawPose();
   });
 }
 
-function run() {
+function drawPose() {
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoint
     console.log("nose: " + poses[i].pose.keypoints[0]);
       //DO SOMETHING THREEJS
+  }
 }
-
