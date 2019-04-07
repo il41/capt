@@ -1,4 +1,4 @@
-const videoSrc;
+const = videoSrc;
 
 if (navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({ video: true })
@@ -10,4 +10,3 @@ if (navigator.mediaDevices.getUserMedia) {
       console.log("Something went wrong!");
     });
 }
-
