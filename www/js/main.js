@@ -64,21 +64,23 @@ var loader = new THREE.FBXLoader();
 
 const poseNet = ml5.poseNet(video, options, model)
 
-let nose = {}
+let pose = []
 
-poseNet.on('pose',  function(results) {
-  let poses = results;
-  loopThroughPoses(poses, nose)
-    let estimatedNose = {
-      x: nose.x,
-      y: nose.y
-   }
-  if (estimatedNose.x && estimatedNose.y){
-    // console.log(estimatedNose.x )
-    render(estimatedNose, model)
+poseNet.on('pose',  function(poses) {
+  if (poses[0] == undefined) return;
+  loopThroughPoses(poses, pose);
+  let estimatedPose = {
+    noseX: pose[0],
+    noseY: pose[1],
+    lhX: pose[2],
+    lhY: pose[3],
+    rhX: pose[4],
+    rhY: pose[5]
+  }
+  if (estimatedPose.noseX && estimatedPose.noseY){
+    render(estimatedPose, model)
   }
 });
-
 
 let lastXPosition = 100;
 let lastYPosition = 100;
@@ -86,26 +88,22 @@ let lastYPosition = 100;
 let changeX = 1;
 let changeY = 1;
 
-
-function loopThroughPoses (poses, nose){
-
-  for (let i = 0; i < poses.length; i++) {
-    let pose = poses[i].pose;
-    // for (let j = 0; j < pose.keypoints.length; j++) {
-      let keypoint = pose.keypoints[0];
-      if (keypoint.score > 0.2 && keypoint.part === 'nose' ) {
-         nose.x = keypoint.position.x
-         nose.y = keypoint.position.y
-       }
-    // }
+function loopThroughPoses (poses, pose){
+    let temp_pose = poses[0].pose;
+    let keyPoints = [temp_pose.keypoints[0], temp_pose.keypoints[9], temp_pose.keypoints[10]];
+    for (let i = 0; i < 3; i++) {
+      if (keyPoints[i].score > 0.2) {
+         pose[2*i] = keyPoints[i].position.x
+         pose[2*i + 1] = keyPoints[i].position.y
+      }
   }
 }
 
 // remember that nose is just an empty object like so {} //
 
-const render = function (nose, model ) {
-  changeX = nose.x - lastXPosition
-  changeY = nose.y - lastYPosition
+const render = function (pose, model ) {
+  changeX = pose.noseX - lastXPosition
+  changeY = pose.noseY - lastYPosition
 
   model.position.x = (changeX * 0.12)
   model.position.y = -(changeY * 0.12)
