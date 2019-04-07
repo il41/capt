@@ -1,6 +1,6 @@
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, (innerWidth/2)/(innerHeight/2), 10.1, 1000 );
-camera.position.set( 0, 0, 20 );
+var threeCamera = new THREE.PerspectiveCamera( 75, (innerWidth/2)/(innerHeight/2), 10.1, 1000 );
+threeCamera.position.set( 0, 0, 20 );
 
 var renderer = new THREE.WebGLRenderer({
   antialias:false,alpha: true
@@ -57,7 +57,7 @@ makeCubes();
   //cubeCluster.rotation.x += (Math.sin( Date.now()*0.02)*0.01 );
 
 
-  renderer.render(scene, camera);
+  renderer.render(scene, threeCamera);
 
  }
  //draw()
