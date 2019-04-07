@@ -49,7 +49,7 @@ var leftHand = new THREE.Object3D;
 var rightHand = new THREE.Object3D;
 
 var loader = new THREE.FBXLoader();
-loader.load( 'models/ghostface.fbx', function ( object ) {
+loader.load( 'models/head.fbx', function ( object ) {
   model1 = object;
   model1.scale.set(20,20,20);
   model1.visible = true;
@@ -63,7 +63,7 @@ loader.load( 'models/arrow.fbx', function ( object ) {
 });
 scene.add( model );
 
-loader.load( 'models/1.fbx', function ( object ) {
+loader.load( 'models/lefthand.fbx', function ( object ) {
   leftHand = object;
   leftHand.scale.set(20,20,20);
   leftHand.visible = true;
