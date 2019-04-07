@@ -45,6 +45,7 @@ var models = []
 models.push(model1,model2);
 
 var leftHand = new THREE.Object3D;
+var rightHand = new THREE.Object3D;
 
 var loader = new THREE.FBXLoader();
  loader.load( 'models/ghostface.fbx', function ( object ) {
@@ -65,7 +66,16 @@ var loader = new THREE.FBXLoader();
    leftHand.scale.set(2,2,2);
    leftHand.visible = true;
   });
-   scene.add( leftHand );
+   scene.add( rightHand );
+   loader.load( 'models/ghostface.fbx', function ( object ) {
+    rightHand = object;
+    rightHand.scale.set(2,2,2);
+    rightHand.visible = true;
+   });
+    scene.add( rightHand );
+
+let bodyModels = []
+bodyModels.push(model, leftHand, rightHand);
 
  document.addEventListener("click", function(){
    updateModel();
@@ -95,11 +105,6 @@ poseNet.on('pose',  function(poses) {
   }
 });
 
-let lastXPosition = 100;
-let lastYPosition = 100;
-
-let changeX = 1;
-let changeY = 1;
 
 function loopThroughPoses (poses, pose){
     let temp_pose = poses[0].pose;
@@ -115,8 +120,8 @@ function loopThroughPoses (poses, pose){
 // remember that nose is just an empty object like so {} //
 
 const render = function (pose, model ) {
-  changeX = pose.noseX - lastXPosition
-  changeY = pose.noseY - lastYPosition
+  changeX = pose.noseX - 100
+  changeY = pose.noseY - 100
 
   model.position.x = (changeX * 0.12)
   model.position.y = -(changeY * 0.12)
