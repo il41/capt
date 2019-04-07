@@ -52,6 +52,8 @@ makeCubes();
  function draw(){
 //console.log(level);
    cubeCluster.rotation.y += 4.001;
+   cubeCluster.position.x = noseX/100
+   // cubeCluster.position.y = noseY;
   // cubeCluster.rotation.z += 2;
   // cubeCluster.rotation.x += 0.001;
   //cubeCluster.rotation.x += (Math.sin( Date.now()*0.02)*0.01 );
