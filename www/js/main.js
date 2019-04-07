@@ -62,14 +62,14 @@ scene.add( model );
 
 loader.load( 'models/ghostface.fbx', function ( object ) {
   leftHand = object;
-  leftHand.scale.set(2,2,2);
+  leftHand.scale.set(20,20,20);
   leftHand.visible = true;
   scene.add( leftHand );
 });
 
 loader.load( 'models/ghostface.fbx', function ( object ) {
   rightHand = object;
-  rightHand.scale.set(2,2,2);
+  rightHand.scale.set(20,20,20);
   rightHand.visible = true;
   scene.add( rightHand )
 });
@@ -105,9 +105,23 @@ function loopThroughPoses (poses){
     let keyPoints = [temp_pose.keypoints[0], temp_pose.keypoints[9], temp_pose.keypoints[10]];
     for (let j = 0; j < 3; j++) {
       if (keyPoints[j].score > 0.2) {
-        model.position.x = keyPoints[j].position.x *.12;
-        model.position.y = (keyPoints[j].position.y *.12) - 10;
-        scene.add(model);
+        let temp_model;
+        switch (j) {
+          case 0:
+            temp_model = model;
+            break;
+          case 1:
+            temp_model = leftHand;
+            break;
+          case 2:
+            temp_model = rightHand;
+            break;
+          default:
+            break;
+        }
+        temp_model.position.x = (keyPoints[j].position.x *.15) - 15;
+        temp_model.position.y = (keyPoints[j].position.y * -.12) + 16;
+        scene.add(temp_model);
         renderer.render(scene, camera);
       }
     }
