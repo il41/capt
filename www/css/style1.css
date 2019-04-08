@@ -3,3 +3,8 @@ body{
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+#interface {
+  z-index: 3;
+  position: absolute;
+}
