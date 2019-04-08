@@ -33,11 +33,15 @@ renderer.autoClear=true;
 renderer.setSize( innerWidth, innerHeight );
 document.body.appendChild( renderer.domElement );
 
-var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 0.6 );
+var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 1.5 );
 scene.add( directionalLight );
 
 var mat1 = new THREE.MeshLambertMaterial({color: 0x00ff00});
-
+var matw = new THREE.LineBasicMaterial( {
+	color: 0xffffff,
+	linewidth: 1
+});
+var matn = new THREE.MeshNormalMaterial();
 
 var model = new THREE.Object3D;
 var model1;
@@ -48,6 +52,7 @@ models.push(model1,model2);
 var leftHand = new THREE.Object3D;
 var rightHand = new THREE.Object3D;
 
+var oloader = new THREE.OBJLoader();
 var loader = new THREE.FBXLoader();
 loader.load( 'models/head.fbx', function ( object ) {
   model1 = object;
@@ -55,9 +60,13 @@ loader.load( 'models/head.fbx', function ( object ) {
   model1.visible = true;
   model.add(model1);
 });
-loader.load( 'models/arrow.fbx', function ( object ) {
+oloader.load( 'models/head1.gltf', function ( object ) {
   model2 = object;
+  model2.material = matn;
   model2.scale.set(20,20,20);
+  model2.quaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
+  model2.position.z -=5;
+  model2.position.x -=4;
   model.add(model2);
   model2.visible = false;
 });
@@ -65,17 +74,27 @@ scene.add( model );
 
 loader.load( 'models/lefthand.fbx', function ( object ) {
   leftHand = object;
-  leftHand.scale.set(20,20,20);
+  leftHand.scale.set(30,30,20);
+  leftHand.quaternion.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), Math.PI / 2 );
   leftHand.visible = true;
   scene.add( leftHand );
 });
 
 loader.load( 'models/hand.fbx', function ( object ) {
   rightHand = object;
-  rightHand.scale.set(20,20,20);
+  rightHand.scale.set(30,30,20);
+  rightHand.quaternion.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), Math.PI / 2 );
   rightHand.visible = true;
   scene.add( rightHand )
   rightHand.material=mat1;
+});
+var environment = new THREE.Object3D;
+loader.load( 'models/gay.fbx', function ( object ) {
+  environment = object;
+  environment.scale.set(2,2,2);
+  environment.visible = true;
+  scene.add( environment )
+//  environment.material=mat1;
 });
 
 var bodyModels = [model, leftHand, rightHand];
@@ -97,9 +116,8 @@ function bodyPart (x, y, bmodel) {
 
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
-  if (bodyModels[0] =! undefined){
-    let results = loopThroughPoses(poses);
-  }
+  let results = loopThroughPoses(poses);
+  environment.quaternion.z += Math.random()*5;
 });
 
 function loopThroughPoses (poses){
@@ -150,7 +168,7 @@ function switchBackground(){
   let bgImg;
   switch (index) {
     case 0:
-      bgImg = "1.png"
+      bgImg = "6.gif"
       break;
     case 1:
       bgImg = "2.jpg"
