@@ -24,6 +24,23 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, (innerWidth/2)/(innerHeight/2), 10.1, 1000 );
 camera.position.set( 0, 0, 20 );
 
+var listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create an Audio source
+var sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+let audioLoader
+
+audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'audio/16kimage.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop(true);
+	sound.setVolume(1);
+	sound.play();
+});
+
 var renderer = new THREE.WebGLRenderer({
   antialias:false,alpha: true
   // preserveDrawingBuffer:false
@@ -33,7 +50,7 @@ renderer.autoClear=true;
 renderer.setSize( innerWidth, innerHeight );
 document.body.appendChild( renderer.domElement );
 
-var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 1.4 );
+var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 3 );
 scene.add( directionalLight );
 
 var mat1 = new THREE.MeshLambertMaterial({color: 0x00ff00});
@@ -134,8 +151,8 @@ function bodyPart (x, y, bmodel) {
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
   let results = loopThroughPoses(poses);
-  environment.rotation.y += Math.random()/15;
-  directionalLight.color.setHex( Math.random() * 0xffffff);
+  environment.rotation.y += Math.random()/5;
+  //directionalLight.color = randomColor();
 });
 
 function loopThroughPoses (poses){
@@ -198,7 +215,7 @@ function switchBackground(){
       bgImg = "2.jpg"
       break;
     case 2:
-      bgImg = "glitter_flag.gif"
+      bgImg = "3.png"
       break;
     case 3:
       bgImg = "4.gif"
@@ -207,7 +224,7 @@ function switchBackground(){
       bgImg = "5.png"
       break;
     case 5:
-      bgImg = "3.png"
+      bgImg = "glitter_flag.gif"
       break;
     default:
       break;
