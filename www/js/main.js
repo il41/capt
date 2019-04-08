@@ -33,7 +33,7 @@ renderer.autoClear=true;
 renderer.setSize( innerWidth, innerHeight );
 document.body.appendChild( renderer.domElement );
 
-var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 1.5 );
+var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 3 );
 scene.add( directionalLight );
 
 var mat1 = new THREE.MeshLambertMaterial({color: 0x00ff00});
@@ -60,7 +60,7 @@ loader.load( 'models/head.fbx', function ( object ) {
   model1.visible = true;
   model.add(model1);
 });
-oloader.load( 'models/head1.gltf', function ( object ) {
+loader.load( 'models/head2.fbx', function ( object ) {
   model2 = object;
   model2.material = matn;
   model2.scale.set(20,20,20);
@@ -69,6 +69,20 @@ oloader.load( 'models/head1.gltf', function ( object ) {
   model2.position.x -=4;
   model.add(model2);
   model2.visible = false;
+});
+loader.load( 'models/head3.fbx', function ( object ) {
+  model3 = object;
+  model3.material = matn;
+  model3.scale.set(20,20,20);
+  model.add(model3);
+  model3.visible = false;
+});
+loader.load( 'models/head4.fbx', function ( object ) {
+  model4 = object;
+  model4.material = matn;
+  model4.scale.set(20,20,20);
+  model.add(model4);
+  model4.visible = false;
 });
 scene.add( model );
 
@@ -89,12 +103,15 @@ loader.load( 'models/hand.fbx', function ( object ) {
   rightHand.material=mat1;
 });
 var environment = new THREE.Object3D;
-loader.load( 'models/gay.fbx', function ( object ) {
+loader.load( 'models/crowd.fbx', function ( object ) {
   environment = object;
-  environment.scale.set(2,2,2);
+  environment.scale.set(150,150,150);
   environment.visible = true;
-  scene.add( environment )
-//  environment.material=mat1;
+  environment.position.z +=50;
+  environment.position.x +=10;
+  environment.position.y -=50;
+  scene.add( environment );
+  environment.material=matn;
 });
 
 var bodyModels = [model, leftHand, rightHand];
@@ -117,7 +134,8 @@ function bodyPart (x, y, bmodel) {
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
   let results = loopThroughPoses(poses);
-  environment.quaternion.z += Math.random()*5;
+  environment.rotation.y += Math.random()/5;
+  //directionalLight.color = randomColor();
 });
 
 function loopThroughPoses (poses){
@@ -159,12 +177,18 @@ function updateModel() {
     model2.visible=true
   } else if(model2.visible){
     model2.visible=false
+    model3.visible=true;
+  } else if(model3.visible){
+    model3.visible=false
+    model4.visible=true;
+  } else if(model4.visible){
+    model4.visible=false
     model1.visible=true;
   }
 };
 
 function switchBackground(){
-  let index = Math.floor(Math.random() * 5);
+  let index = Math.floor(Math.random() * 6);
   let bgImg;
   switch (index) {
     case 0:
@@ -182,8 +206,24 @@ function switchBackground(){
     case 4:
       bgImg = "5.png"
       break;
+    case 5:
+      bgImg = "glitter_flag.gif"
+      break;
     default:
       break;
   }
   document.body.style.backgroundImage = "url('images/" + bgImg + "')"
+}
+
+function randomColor(){
+  var letters = "0123456789ABCDEF";
+  // html color code starts with #
+  var color = '#';
+
+  // generating 6 times as HTML color code consist
+  // of 6 letter or digits
+  for (var i = 0; i < 6; i++){
+     color += letters[(Math.floor(Math.random() * 16))];}
+   console.log(color);
+  return color
 }
