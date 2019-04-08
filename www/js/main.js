@@ -134,7 +134,7 @@ function bodyPart (x, y, bmodel) {
 poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
   let results = loopThroughPoses(poses);
-  environment.rotation.y += Math.random()/5;
+  environment.rotation.y += Math.random()/15;
   directionalLight.color.setHex( Math.random() * 0xffffff);
 });
 
@@ -198,7 +198,7 @@ function switchBackground(){
       bgImg = "2.jpg"
       break;
     case 2:
-      bgImg = "3.png"
+      bgImg = "glitter_flag.gif"
       break;
     case 3:
       bgImg = "4.gif"
@@ -207,7 +207,7 @@ function switchBackground(){
       bgImg = "5.png"
       break;
     case 5:
-      bgImg = "glitter_flag.gif"
+      bgImg = "3.png"
       break;
     default:
       break;
