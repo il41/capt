@@ -33,7 +33,7 @@ renderer.autoClear=true;
 renderer.setSize( innerWidth, innerHeight );
 document.body.appendChild( renderer.domElement );
 
-var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 3 );
+var directionalLight = new THREE.HemisphereLight( 0x0000ff, 0x00ff00, 1.4 );
 scene.add( directionalLight );
 
 var mat1 = new THREE.MeshLambertMaterial({color: 0x00ff00});
@@ -135,7 +135,7 @@ poseNet.on('pose',  function(poses) {
   if (poses[0] == undefined) return;
   let results = loopThroughPoses(poses);
   environment.rotation.y += Math.random()/5;
-  //directionalLight.color = randomColor();
+  directionalLight.color.setHex( Math.random() * 0xffffff);
 });
 
 function loopThroughPoses (poses){
