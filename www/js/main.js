@@ -205,7 +205,7 @@ function updateModel() {
 };
 
 function switchBackground(){
-  let index = Math.floor(Math.random() * 6);
+  let index = Math.floor(Math.random() * 10);
   let bgImg;
   switch (index) {
     case 0:
@@ -224,7 +224,19 @@ function switchBackground(){
       bgImg = "5.png"
       break;
     case 5:
-      bgImg = "glitter_flag.gif"
+      bgImg = "music.gif"
+      break;
+    case 6:
+      bgImg = "hover.png"
+      break;
+    case 7:
+      bgImg = "plasma.png"
+      break;
+    case 8:
+      bgImg = "blackhole.gif"
+      break;
+    case 9:
+      bgImg = "image.jpg"
       break;
     default:
       break;
